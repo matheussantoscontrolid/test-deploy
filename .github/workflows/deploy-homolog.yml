@@ -1,0 +1,103 @@
+name: CI/CD - Deploy Homologação
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch para realizar o deploy"
+        required: true
+        default: "main"
+        type: string
+
+# Permissões necessárias para autenticação OIDC com a AWS
+permissions:
+  id-token: write # necessário para OIDC
+  contents: read # necessário para checkout
+
+env:
+  AWS_REGION: sa-east-1
+  ECR_REPOSITORY: test-deploy
+  EC2_INSTANCE_ID: i-062b0db46c12d962c # ID da instância EC2 de homologação
+  APP_DIR: /home/ubuntu/infra-idsecure-local # diretório onde está o docker-compose.yml no servidor
+
+jobs:
+  build-and-deploy:
+    name: Build, Push e Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 2 - Checkout do código (na branch escolhida no trigger)
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # 3.1 - Configurar credenciais AWS via OIDC (sem armazenar access key/secret)
+      - name: Configurar credenciais AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsDeployRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 3.2 - Docker já vem instalado no runner ubuntu-latest, mas garantimos o buildx
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3.3 - Login no ECR
+      - name: Login no Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 4, 5 e 6 - Build, tag (commit hash + latest) e push
+      - name: Build, tag e push da imagem para o ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            .
+
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+          echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # 7, 8, 9 e 10 - Deploy via SSM (sem SSH exposto)
+      # Envia comandos para a EC2 via AWS Systems Manager
+      - name: Deploy na EC2 via SSM
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${{ env.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy commit ${{ github.sha }}" \
+            --parameters '{"commands":[
+              "set -e",
+              "cd ${{ env.APP_DIR }}",
+              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin '"$ECR_REGISTRY"'",
+              "docker pull '"$ECR_REGISTRY"'/${{ env.ECR_REPOSITORY }}:'"$IMAGE_TAG"'",
+              "docker pull '"$ECR_REGISTRY"'/${{ env.ECR_REPOSITORY }}:latest",
+              "docker compose down test-deploy || true",
+              "docker compose up test-deploy -d",
+              "sudo nginx -t && sudo systemctl reload nginx",
+              "docker image prune -f"
+            ]}' \
+            --output text \
+            --query "Command.CommandId")
+
+          echo "Command ID: $COMMAND_ID"
+
+          # Aguarda execução e captura o resultado
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${{ env.EC2_INSTANCE_ID }}"
+
+          # Mostra a saída da execução nos logs do GitHub Actions
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${{ env.EC2_INSTANCE_ID }}"
