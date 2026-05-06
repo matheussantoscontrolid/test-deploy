@@ -1,155 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finova - Gestão Financeira Inteligente</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <span class="logo-icon">◈</span>
-                <span class="logo-text">Finova</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#dashboard" class="active">Dashboard</a></li>
-                <li><a href="#transacoes">Transações</a></li>
-                <li><a href="#investimentos">Investimentos</a></li>
-                <li><a href="#metas">Metas</a></li>
-            </ul>
-            <button class="btn-profile">
-                <span class="profile-avatar">M</span>
-            </button>
+      <div class="nav-container">
+        <div class="logo">
+          <span class="logo-icon">◈</span>
+          <span class="logo-text">Finova</span>
         </div>
+        <ul class="nav-links">
+          <li><a href="#dashboard" class="active">Dashboard</a></li>
+          <li><a href="#transacoes">Transações</a></li>
+          <li><a href="#investimentos">Investimentos</a></li>
+          <li><a href="#metas">Metas</a></li>
+        </ul>
+        <button class="btn-profile">
+          <span class="profile-avatar">M</span>
+        </button>
+      </div>
     </nav>
 
     <main class="main-content">
-        <header class="page-header">
-            <div>
-                <h1>Olá, Matheus</h1>
-                <p class="subtitle">Aqui está o resumo das suas finanças hoje</p>
-            </div>
-            <button class="btn-primary" id="addTransactionBtn">
-                <span>+</span> Nova Transação
-            </button>
-        </header>
+      <header class="page-header">
+        <div>
+          <h1>Olá, pessoa nova, acabei de alterar aqui</h1>
+          <p class="subtitle">Aqui está o resumo das suas finanças hoje</p>
+        </div>
+        <button class="btn-primary" id="addTransactionBtn">
+          <span>+</span> Nova Transação
+        </button>
+      </header>
 
-        <section class="cards-grid">
-            <div class="card card-balance">
-                <div class="card-header">
-                    <span class="card-label">Saldo Total</span>
-                    <span class="card-icon">💰</span>
-                </div>
-                <h2 class="card-value" id="totalBalance">R$ 0,00</h2>
-                <span class="card-trend positive">+12,5% este mês</span>
-            </div>
+      <section class="cards-grid">
+        <div class="card card-balance">
+          <div class="card-header">
+            <span class="card-label">Saldo Total</span>
+            <span class="card-icon">💰</span>
+          </div>
+          <h2 class="card-value" id="totalBalance">R$ 0,00</h2>
+          <span class="card-trend positive">+12,5% este mês</span>
+        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-label">Receitas</span>
-                    <span class="card-icon">📈</span>
-                </div>
-                <h2 class="card-value" id="totalIncome">R$ 0,00</h2>
-                <span class="card-trend positive">+8,2%</span>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Receitas</span>
+            <span class="card-icon">📈</span>
+          </div>
+          <h2 class="card-value" id="totalIncome">R$ 0,00</h2>
+          <span class="card-trend positive">+8,2%</span>
+        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-label">Despesas</span>
-                    <span class="card-icon">📉</span>
-                </div>
-                <h2 class="card-value" id="totalExpense">R$ 0,00</h2>
-                <span class="card-trend negative">-3,1%</span>
-            </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Despesas</span>
+            <span class="card-icon">📉</span>
+          </div>
+          <h2 class="card-value" id="totalExpense">R$ 0,00</h2>
+          <span class="card-trend negative">-3,1%</span>
+        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-label">Investimentos</span>
-                    <span class="card-icon">🚀</span>
-                </div>
-                <h2 class="card-value">R$ 18.420,00</h2>
-                <span class="card-trend positive">+15,7%</span>
-            </div>
-        </section>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-label">Investimentos</span>
+            <span class="card-icon">🚀</span>
+          </div>
+          <h2 class="card-value">R$ 18.420,00</h2>
+          <span class="card-trend positive">+15,7%</span>
+        </div>
+      </section>
 
-        <section class="content-grid">
-            <div class="panel chart-panel">
-                <div class="panel-header">
-                    <h3>Visão Geral</h3>
-                    <div class="chart-tabs">
-                        <button class="tab active" data-period="7d">7 dias</button>
-                        <button class="tab" data-period="30d">30 dias</button>
-                        <button class="tab" data-period="90d">90 dias</button>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <svg id="chart" viewBox="0 0 600 240" preserveAspectRatio="none"></svg>
-                </div>
+      <section class="content-grid">
+        <div class="panel chart-panel">
+          <div class="panel-header">
+            <h3>Visão Geral</h3>
+            <div class="chart-tabs">
+              <button class="tab active" data-period="7d">7 dias</button>
+              <button class="tab" data-period="30d">30 dias</button>
+              <button class="tab" data-period="90d">90 dias</button>
             </div>
+          </div>
+          <div class="chart-container">
+            <svg
+              id="chart"
+              viewBox="0 0 600 240"
+              preserveAspectRatio="none"
+            ></svg>
+          </div>
+        </div>
 
-            <div class="panel">
-                <div class="panel-header">
-                    <h3>Categorias</h3>
-                </div>
-                <ul class="category-list" id="categoryList"></ul>
-            </div>
-        </section>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Categorias</h3>
+          </div>
+          <ul class="category-list" id="categoryList"></ul>
+        </div>
+      </section>
 
-        <section class="panel transactions-panel">
-            <div class="panel-header">
-                <h3>Transações Recentes</h3>
-                <a href="#" class="link">Ver todas</a>
-            </div>
-            <ul class="transaction-list" id="transactionList"></ul>
-        </section>
+      <section class="panel transactions-panel">
+        <div class="panel-header">
+          <h3>Transações Recentes</h3>
+          <a href="#" class="link">Ver todas</a>
+        </div>
+        <ul class="transaction-list" id="transactionList"></ul>
+      </section>
     </main>
 
     <div class="modal" id="transactionModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Nova Transação</h3>
-                <button class="btn-close" id="closeModal">×</button>
-            </div>
-            <form id="transactionForm">
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <input type="text" id="description" required placeholder="Ex: Supermercado">
-                </div>
-                <div class="form-group">
-                    <label>Valor</label>
-                    <input type="number" id="amount" step="0.01" required placeholder="0,00">
-                </div>
-                <div class="form-group">
-                    <label>Tipo</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="type" value="income" checked>
-                            <span>Receita</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="type" value="expense">
-                            <span>Despesa</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Categoria</label>
-                    <select id="category" required>
-                        <option value="Alimentação">Alimentação</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Moradia">Moradia</option>
-                        <option value="Lazer">Lazer</option>
-                        <option value="Salário">Salário</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary btn-block">Adicionar</button>
-            </form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Nova Transação</h3>
+          <button class="btn-close" id="closeModal">×</button>
         </div>
+        <form id="transactionForm">
+          <div class="form-group">
+            <label>Descrição</label>
+            <input
+              type="text"
+              id="description"
+              required
+              placeholder="Ex: Supermercado"
+            />
+          </div>
+          <div class="form-group">
+            <label>Valor</label>
+            <input
+              type="number"
+              id="amount"
+              step="0.01"
+              required
+              placeholder="0,00"
+            />
+          </div>
+          <div class="form-group">
+            <label>Tipo</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="type" value="income" checked />
+                <span>Receita</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="type" value="expense" />
+                <span>Despesa</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select id="category" required>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Moradia">Moradia</option>
+              <option value="Lazer">Lazer</option>
+              <option value="Salário">Salário</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary btn-block">Adicionar</button>
+        </form>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
