@@ -6,8 +6,13 @@ on:
       branch:
         description: "Branch para realizar o deploy"
         required: true
-        default: "main"
-        type: string
+        default: "homolog"
+        type: choice
+        options:
+          - staging
+          - homolog
+          - master
+          - main
 
 # Permissões necessárias para autenticação OIDC com a AWS
 permissions:
@@ -80,10 +85,8 @@ jobs:
               "set -e",
               "cd ${{ env.APP_DIR }}",
               "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin '"$ECR_REGISTRY"'",
-              "docker pull '"$ECR_REGISTRY"'/${{ env.ECR_REPOSITORY }}:'"$IMAGE_TAG"'",
-              "docker pull '"$ECR_REGISTRY"'/${{ env.ECR_REPOSITORY }}:latest",
-              "docker compose down test-deploy || true",
-              "docker compose up test-deploy -d",
+              "docker compose pull test-deploy",
+              "docker compose up -d --no-deps --force-recreate test-deploy",
               "sudo nginx -t && sudo systemctl reload nginx",
               "docker image prune -f"
             ]}' \
