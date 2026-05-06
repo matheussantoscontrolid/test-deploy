@@ -36,7 +36,7 @@ jobs:
       - name: Configurar credenciais AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsDeployRole
+          role-to-assume: arn:aws:iam::593793063733:role/GitHubActionsDeployRole
           aws-region: ${{ env.AWS_REGION }}
 
       # 3.2 - Docker já vem instalado no runner ubuntu-latest, mas garantimos o buildx
